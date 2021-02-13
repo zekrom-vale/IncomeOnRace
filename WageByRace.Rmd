@@ -1,0 +1,198 @@
+---
+title: "Wage by Race"
+author: "Shawn Graven"
+date: "2/12/2021"
+output: html_document
+---
+
+```{r knitr, message=FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE
+)
+```
+
+# Setup
+## Install and Attach
+```{r setup, message = FALSE, warning = FALSE}
+libinstall <- function(pkg) {
+	if(!require(pkg, character.only = T))install.packages(pkg)
+	library(pkg, character.only = T)
+}
+
+libinstall("tidyverse")
+libinstall("glue")
+libinstall("readr")
+libinstall("plotly")
+libinstall("readr")
+libinstall("readxl")
+libinstall("lubridate")
+libinstall("curl")
+libinstall("epidata")
+```
+
+# Import Data
+## Import cpsaat Data
+```{r import cpsaat, message=FALSE, warning=FALSE}
+if(!curl::has_internet())quit()
+
+# Download cpsaat data
+tmp <- tempfile()
+curl_download("https://www.bls.gov/cps/cpsaat11.xlsx", destfile = tmp)
+
+# Import cpsaat
+cpsaat11 <- read_excel(
+		tmp,
+		col_names = c(
+			"Occupation",
+			"Total",
+			"Women",
+			"White",
+			"Black/African American",
+			"Asian",
+			"Hispanic/Latino"
+		),
+		na = "–",
+		col_types = c(
+			Occupation="text",
+			Total="numeric",
+			"Women"="numeric",
+			"White"="numeric",
+			"Black/African American"="numeric",
+			"Asian"="numeric",
+			"Hispanic/Latino"="numeric"
+		),
+		skip = 7
+	)%>%
+	drop_na(Occupation)
+file.remove(tmp)
+rm(tmp)
+```
+
+## Import EPI Data
+Get the data at <a href="https://www.epi.org/data/#/?subject=wage-avg&g=*&r=*">EPI</a>
+```{r Import EPI Data, message=FALSE, warning=FALSE}
+Labor_force_participation <- epidata::get_labor_force_participation_rate(by = "gr")
+
+Medianaverage_hourly_wages <- epidata::get_median_and_mean_wages(by = "gr")
+
+Minimum_wage <- epidata::get_minimum_wage()
+```
+
+# Clean Data
+## Clean cpsaat11
+```{r Clean cpsaat11}
+cpsaat11
+```
+
+Looks fine.
+
+## Clean Labor_force_participation
+```{r Clean Labor_force_participation}
+Labor_force_participation
+
+Participation=Labor_force_participation%>%
+	pivot_longer(-c(date), names_to = "Race", values_to = "Participation", values_drop_na = T)%>%
+	separate(Race, into = c("Race", "Gender"))
+
+Participation=Participation%>%
+	filter(grepl("women|men", Race, ignore.case = T))%>%
+	mutate(
+		Gender=Race,
+		Race=NA_character_
+	)%>%
+	union(
+		Participation%>%
+			filter(!grepl("women|men", Race, ignore.case = T))
+	)
+Participation%>%
+	filter(!is.na(Race))
+rm(Labor_force_participation)
+```
+
+
+
+## Clean Medianaverage_hourly_wages
+```{r Clean Medianaverage_hourly_wages}
+Medianaverage_hourly_wages
+Wages=Medianaverage_hourly_wages%>%
+	pivot_longer(-date, names_to = "Race", values_to = "Wage", values_drop_na = T)%>%
+	separate(Race, into = c("Race", "Gender", "Summary"), fill = "left")
+
+# Race is in the wrong location sometimes
+Wages=Wages%>%
+	filter(!grepl("women|men", Gender, ignore.case = T))%>%
+	mutate(
+		Race=Gender,
+		Gender=NA_character_
+	)%>%
+	union(
+		Wages%>%
+			filter(grepl("women|men", Gender, ignore.case = T))
+	)
+# No need to keep the Average and Median split up
+Wages=Wages%>%
+	pivot_wider(names_from = Summary, values_from = Wage)
+rm(Medianaverage_hourly_wages)
+```
+
+## Clean Minimum_wage
+```{r Clean Minimum_wage}
+#adjust for inflation to get to common 2019
+Minimum_wage=Minimum_wage%>%
+	mutate(
+		Min2019=priceR::adjust_for_inflation(
+			federal_minimum_wage_real_x_2018_dollars,
+			2018,
+			"US",
+			2019
+		)
+	)
+
+Minimum_wage=Minimum_wage%>%
+	rename(MinCur=federal_minimum_wage_nominal_dollars)%>%
+	select(Min2019, MinCur, date)
+```
+
+
+# Fix inconsistant case
+```{r Fix Case}
+Wages=Wages%>%
+	rename(
+		Date=date,
+		Median=median,
+		Average=average
+	)
+
+Participation=Participation%>%
+	rename(Date=date)
+
+Minimum_wage=Minimum_wage%>%
+	rename(Date=date)
+```
+
+# Graph
+## Average and Medium Wage over Time by Race and Gender
+```{r}
+g=Wages%>%
+	ggplot(aes(col=Race, x=Date))+
+	geom_line(aes(y=Average))+
+	geom_line(aes(y=Min2019, col=NULL), data=Minimum_wage, size=2)+
+	facet_wrap(~Gender)
+ggplotly(g)
+
+g=Wages%>%
+	ggplot(aes(col=Race, x=Date))+
+	geom_line(aes(y=Median))+
+	geom_line(aes(y=Min2019, col=NULL), data=Minimum_wage, size=2)+
+	facet_wrap(~Gender)
+ggplotly(g)
+```
+
+## Scatter Plot over Time
+```{r}
+g=Wages%>%
+	ggplot()+
+	geom_point(aes(x=Median, y=Average, col=Race, shape=Gender, frame=Date))+
+	ggtitle("Median vs Average Wage per Race and Gender over Time")
+ggplotly(g)
+```
