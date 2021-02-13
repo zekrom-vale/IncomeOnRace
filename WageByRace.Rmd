@@ -14,9 +14,30 @@ knitr::opts_chunk$set(
 # Setup
 ## Install and Attach
 ```{r setup, message = FALSE, warning = FALSE}
-libinstall <- function(pkg) {
+libinstall <- function(pkg, lib=TRUE) {
 	if(!require(pkg, character.only = T))install.packages(pkg)
-	library(pkg, character.only = T)
+	if(lib)library(pkg, character.only = T)
+}
+
+# https://rstudio.github.io/distill/tables.html
+
+libinstall("rmarkdown")
+libinstall("kableExtra")
+disp=function(tbl, nhead=0, ntail=0, style=paged_table){
+	if(is.null(style))style=function(t){
+		kbl(t)%>%
+			style()%>%
+			return()
+	}
+	if(isTRUE(getOption('knitr.in.progress'))){
+		if(nhead!=0)tbl=head(tbl, n=nhead)
+		if(ntail!=0)tbl=tail(tbl, n=ntail)
+		return(
+			tbl%>%
+  		style()
+		)
+	}
+	return(tbl)
 }
 
 libinstall("tidyverse")
@@ -81,14 +102,14 @@ Minimum_wage <- epidata::get_minimum_wage()
 # Clean Data
 ## Clean cpsaat11
 ```{r Clean cpsaat11}
-cpsaat11
+cpsaat11%>%disp()
 ```
 
 Looks fine.
 
 ## Clean Labor_force_participation
 ```{r Clean Labor_force_participation}
-Labor_force_participation
+Labor_force_participation%>%disp()
 
 Participation=Labor_force_participation%>%
 	pivot_longer(-c(date), names_to = "Race", values_to = "Participation", values_drop_na = T)%>%
@@ -113,7 +134,7 @@ rm(Labor_force_participation)
 
 ## Clean Medianaverage_hourly_wages
 ```{r Clean Medianaverage_hourly_wages}
-Medianaverage_hourly_wages
+Medianaverage_hourly_wages%>%disp()
 Wages=Medianaverage_hourly_wages%>%
 	pivot_longer(-date, names_to = "Race", values_to = "Wage", values_drop_na = T)%>%
 	separate(Race, into = c("Race", "Gender", "Summary"), fill = "left")
@@ -137,6 +158,7 @@ rm(Medianaverage_hourly_wages)
 
 ## Clean Minimum_wage
 ```{r Clean Minimum_wage}
+Minimum_wage%>%disp()
 #adjust for inflation to get to common 2019
 Minimum_wage=Minimum_wage%>%
 	mutate(
