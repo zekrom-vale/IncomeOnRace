@@ -13,6 +13,7 @@ knitr::opts_chunk$set(
 
 # Setup
 ## Install and Attach
+`installr` provides `require2`, this will install a package if it is missing and library it.  Unfortunetly, `intall` is a package too, so you cannot use `require2` on it.
 ```{r setup, message = FALSE, warning = FALSE}
 if(!require(installr))install.packages("installr")
 library(installr)
@@ -21,24 +22,6 @@ library(installr)
 
 require2(rmarkdown)
 require2(kableExtra)
-
-disp=function(tbl, nhead=0, ntail=0, style=paged_table){
-	if(is.null(style))style=function(t){
-		kbl(t)%>%
-			style()%>%
-			return()
-	}
-	if(isTRUE(getOption('knitr.in.progress'))){
-		if(nhead!=0)tbl=head(tbl, n=nhead)
-		if(ntail!=0)tbl=tail(tbl, n=ntail)
-		return(
-			tbl%>%
-  		style()
-		)
-	}
-	return(tbl)
-}
-
 require2(tidyverse)
 require2(glue)
 require2(readr)
@@ -50,13 +33,52 @@ require2(curl)
 require2(epidata)
 ```
 
-# Import Data
-## Import cpsaat Data
-```{r import cpsaat, message=FALSE, warning=FALSE}
-if(!curl::has_internet())quit()
+## Set up the Knitted table
+This will automaticaly detect if the document is being knited and apply the provided table formatting function or `rmarkdown::paged_table` if not provided.  If `nhead` or `ntail` it will call the `head` or `tail` function respectively and limit the data.  On `0`, it will ignore it.  The default is to create a paginated table on overflow so all the data is accessable but does not take the entire screen.
+```{r}
+disp=function(tbl, nhead=0, ntail=0, style=paged_table){
+	if(!is.function(style))style=function(t){
+		kbl(t)%>%
+			style()%>%
+			return()
+	}
+	# If the code is kniting
+	if(isTRUE(getOption('knitr.in.progress'))){
+		if(nhead!=0)tbl=head(tbl, n=nhead)
+		if(ntail!=0)tbl=tail(tbl, n=ntail)
+		return(
+			tbl%>%
+  		style()
+		)
+	}
+	# Otherwise just return the raw tible to be formated by RStudio
+	return(tbl)
+}
+```
 
-# Download cpsaat data
+```{r eval=FALSE, class.source="bg-info"}
+mtcars%>%disp()
+mtcars%>%disp(nhead = 20)
+mtcars%>%disp(ntail = 10)
+mtcars%>%disp(style = function(t){
+	kbl(t)%>%
+			style()%>%
+			return()
+})
+```
+
+# Import Data
+Make sure we have internet and if not abort if not
+```{r check internet}
+if(!curl::has_internet())quit()
+```
+
+## Import cpsaat Data
+cpsaat data is provided online at <a href="https://www.bls.gov/cps/cpsaat11.xlsx">bls.gov</a>.  As it is a direct link we can donload it and save it to a temporary file and process the data with `readxl::read_excel()`
+```{r import cpsaat, message=FALSE, warning=FALSE}
+# Create a temp file name/location
 tmp <- tempfile()
+# Download cpsaat data
 curl_download("https://www.bls.gov/cps/cpsaat11.xlsx", destfile = tmp)
 
 # Import cpsaat
@@ -84,12 +106,13 @@ cpsaat11 <- read_excel(
 		skip = 7
 	)%>%
 	drop_na(Occupation)
+# Remove temp file and var
 file.remove(tmp)
 rm(tmp)
 ```
 
 ## Import EPI Data
-Get the data at <a href="https://www.epi.org/data/#/?subject=wage-avg&g=*&r=*">EPI</a>
+Get the data at <a href="https://www.epi.org/data/#/?subject=wage-avg&g=*&r=*">EPI</a>.  As there is no direct link avalable we cannot use `curl`, instead there is a package that we can use to access the data, `epidata`.  This will download data in the background.
 ```{r Import EPI Data, message=FALSE, warning=FALSE}
 Labor_force_participation <- epidata::get_labor_force_participation_rate(by = "gr")
 
@@ -99,6 +122,7 @@ Minimum_wage <- epidata::get_minimum_wage()
 ```
 
 # Clean Data
+The data is in a terrible format for use in `ggplot2`, and we call this wide format as it has many columns.  To fix this we can convert it into long format, as there are many rows, with `pivot_longer`.
 ## Clean cpsaat11
 ```{r Clean cpsaat11}
 cpsaat11%>%disp()
@@ -111,7 +135,7 @@ Looks fine.
 Labor_force_participation%>%disp()
 
 Participation=Labor_force_participation%>%
-	pivot_longer(-c(date), names_to = "Race", values_to = "Participation", values_drop_na = T)%>%
+	pivot_longer(-date, names_to = "Race", values_to = "Participation", values_drop_na = T)%>%
 	separate(Race, into = c("Race", "Gender"))
 
 Participation=Participation%>%
@@ -156,6 +180,7 @@ rm(Medianaverage_hourly_wages)
 ```
 
 ## Clean Minimum_wage
+This data has data in terms of 2018, the other data is in 2019 USD.  Although small, there will be a difference and we need to adjust for inflation.  The package `priceR` allows us to convert those monitary values into other ones using online inflation data.
 ```{r Clean Minimum_wage}
 Minimum_wage%>%disp()
 #adjust for inflation to get to common 2019
@@ -176,6 +201,7 @@ Minimum_wage=Minimum_wage%>%
 
 
 # Fix inconsistant case
+As the data was imported with `epidata`, the colum names have been changed from what the csv has.  So we need to fix that to conform to consistancy.
 ```{r Fix Case}
 Wages=Wages%>%
 	rename(
