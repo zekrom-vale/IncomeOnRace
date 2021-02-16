@@ -14,15 +14,14 @@ knitr::opts_chunk$set(
 # Setup
 ## Install and Attach
 ```{r setup, message = FALSE, warning = FALSE}
-libinstall <- function(pkg, lib=TRUE) {
-	if(!require(pkg, character.only = T))install.packages(pkg)
-	if(lib)library(pkg, character.only = T)
-}
+if(!require(installr))install.packages("installr")
+library(installr)
 
 # https://rstudio.github.io/distill/tables.html
 
-libinstall("rmarkdown")
-libinstall("kableExtra")
+require2(rmarkdown)
+require2(kableExtra)
+
 disp=function(tbl, nhead=0, ntail=0, style=paged_table){
 	if(is.null(style))style=function(t){
 		kbl(t)%>%
@@ -40,15 +39,15 @@ disp=function(tbl, nhead=0, ntail=0, style=paged_table){
 	return(tbl)
 }
 
-libinstall("tidyverse")
-libinstall("glue")
-libinstall("readr")
-libinstall("plotly")
-libinstall("readr")
-libinstall("readxl")
-libinstall("lubridate")
-libinstall("curl")
-libinstall("epidata")
+require2(tidyverse)
+require2(glue)
+require2(readr)
+require2(plotly)
+require2(readr)
+require2(readxl)
+require2(lubridate)
+require2(curl)
+require2(epidata)
 ```
 
 # Import Data
