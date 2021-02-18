@@ -126,6 +126,9 @@ The data is in a terrible format for use in `ggplot2`, and we call this wide for
 ## Clean cpsaat11
 ```{r Clean cpsaat11}
 cpsaat11%>%disp()
+
+cpsaat11=cpsaat11%>%
+	pivot_longer(-c(Occupation, Total), names_to = "Race", values_to = "Percentage")
 ```
 
 Looks fine.

@@ -1,0 +1,74 @@
+---
+title: "Graph"
+author: "Shawn Graven"
+date: "2/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Sumarise data according to income of jobs
+```{r}
+cpsaat11%>%
+	ggplot(aes(x=log(Total)))+
+	geom_boxplot()
+
+# Generate the percentiles
+se=quantile(log(cpsaat11$Total), seq(0, 1, by=.1), na.rm=T)
+
+# Add outlyers
+se["200%"]=Inf
+
+# break into groups and drop NAs
+d=cpsaat11%>%
+	drop_na(Percentage)%>%
+	group_by(gr=cut(Total, breaks=exp(se)), Race)
+
+# Sumarise the data and remove women as it is not a race
+# This is so it alld up to 100% or so
+d=d%>%
+	summarise(Percentage=mean(Percentage), Total=mean(Total))%>%
+	filter(Race!="Women")
+d
+
+# Is ther missing data
+cpsaat11%>%
+	drop_na(Percentage)%>%
+	filter(Total<30)
+```
+
+```{r}
+g=d%>%
+	ggplot(aes(fill=Race, y=Percentage, x=gr))+
+	geom_col()
+ggplotly(g)
+
+g=d%>%
+	ggplot(aes(fill=Race, y=Percentage*Total, x=gr))+
+	geom_col(position = "dodge2")+
+	scale_y_log10()
+ggplotly(g)
+
+g=d%>%
+	ggplot(aes(fill=gr, x=1, y=Percentage))+
+	geom_col(position = "dodge2")+
+	facet_wrap(~Race)
+ggplotly(g)
+
+
+g=d%>%
+	ggplot(aes(fill=gr, x=1, y=Percentage*Total))+
+	geom_col(position = "dodge2")+
+	facet_wrap(~Race)+
+	scale_y_log10()
+ggplotly(g)
+
+
+g=d%>%
+	ggplot(aes(fill=Race, x=1, y=Percentage*Total))+
+	geom_col(position = "dodge2")+
+	facet_wrap(~gr)
+ggplotly(g)
+```
