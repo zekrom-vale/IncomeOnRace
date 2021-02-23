@@ -1,0 +1,18 @@
+---
+title: "Index"
+author: "Shawn Graven"
+date: "2/23/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# {.tabset}
+
+```{r, child='importAndClean.Rmd'}
+```
+
+```{r, child='WageAccordingtoJob.Rmd'}
+```
