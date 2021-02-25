@@ -17,7 +17,7 @@ We have two sources of data, one from [BLS](https://www.bls.gov/cps) and the maj
 
 BLS maintains a data set called `cpsaat`, this data summaries the wage earnings per type of job, based on race and gender.  To access the data in R we use a `curl_download` to retrieve the `.xlsx` file off the internet.  To read the file we use the function  `readxl::read_excel`.
 
-EPI hosts a lot of data on wage statistics including, minimum wage, the participation, and earnings of each race, gender, education level, and much more.  Due to the way EPI presents the data, it cannot be downloaded with `curl`.  Instead, I have accessed the data with the package `epidata`, this simple package interfaces with EPI so that you don't have to manually download the data.
+EPI hosts a lot of data on wage statistics including, minimum wage, the participation, and earnings of each race, gender, education level, and much more.  Due to the way EPI presents the data, it cannot be downloaded with `curl`.  Instead, I have accessed the data with the package `epidata`, this simple package interfaces with EPI so that you don't have to manually download the data.  EPI does not contain individual observations for wage, instead it provides 2 summarizations of the data grouped by race, age, gender, and education.  This is the median, 50% of people make more and 50% of people make less than this value.  The other one is mean, or they call average, this is the sum of wages added up and divided by the amount.  $\bar x=\frac{\sum_{i=0}^{n-1} x_i}{n}$  To reduce the effect of the highest earners we will be using the median, like they use in the housing market as a high outlyer will only add one rather than a lot more.
 
 
 ### Import cpsaat Data

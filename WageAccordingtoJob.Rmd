@@ -9,8 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Wages according to Jobs
-
 ### Sumarise data according to income of jobs
+This data is currently unusable as there is only one opservation per type of job, we don't have over time statistics.  We do however, have a snapshot of the diverse earnings, we don't care what the job is, but the average wage of each race per earning bracket.
 ```{r}
 cpsaat11%>%
 	ggplot(aes(x=log(Total)))+
@@ -41,26 +41,35 @@ cpsaat11%>%
 	drop_na(Percentage)%>%
 	filter(Total<30)
 ```
-No, we just have a lack of opservations for poor paying jobs.
+No, we just have a lack of observations for poor paying jobs.
 
 
 ### Graph
 ```{r}
 g=d%>%
 	ggplot(aes(fill=Race, y=Percentage, x=gr))+
-	geom_col()
+	geom_col()+
+	xlab("Wage Bracket")+
+	ylab("Percentage of Earnings")+
+	ggtitle("Percentage of Earnings per Wage Braket and Race")
 ggplotly(g)
 
 g=d%>%
 	ggplot(aes(fill=Race, y=Percentage*Total, x=gr))+
 	geom_col(position = "dodge2")+
-	scale_y_log10()
+	scale_y_log10()+
+	xlab("Wage Bracket")+
+	ylab("Earnings in USD")+
+	ggtitle("Total Earnings per Wage Braket and Race")
 ggplotly(g)
 
 g=d%>%
 	ggplot(aes(fill=gr, x=1, y=Percentage))+
 	geom_col(position = "dodge2")+
-	facet_wrap(~Race)
+	facet_wrap(~Race)+
+	xlab("Wage Bracket")+
+	ylab("Percentage of Earnings")+
+	ggtitle("Percentage of Earnings per Wage Braket and Race")
 ggplotly(g)
 
 
@@ -68,13 +77,19 @@ g=d%>%
 	ggplot(aes(fill=gr, x=1, y=Percentage*Total))+
 	geom_col(position = "dodge2")+
 	facet_wrap(~Race)+
-	scale_y_log10()
+	scale_y_log10()+
+	xlab("Wage Bracket")+
+	ylab("Earnings in USD")+
+	ggtitle("Log of Total Earnings per Wage Braket and Race")
 ggplotly(g)
 
 
 g=d%>%
 	ggplot(aes(fill=Race, x=1, y=Percentage*Total))+
 	geom_col(position = "dodge2")+
-	facet_wrap(~gr)
+	facet_wrap(~gr)+
+	xlab("Wage Bracket")+
+	ylab("Earnings in USD")+
+	ggtitle("Total Earnings per Wage Braket and Race")
 ggplotly(g)
 ```
