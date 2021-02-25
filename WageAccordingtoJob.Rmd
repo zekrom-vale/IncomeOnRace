@@ -16,30 +16,35 @@ cpsaat11%>%
 	ggplot(aes(x=log(Total)))+
 	geom_boxplot()
 
-## Generate the percentiles
+# Generate the percentiles
 se=quantile(log(cpsaat11$Total), seq(0, 1, by=.1), na.rm=T)
 
-## Add outlyers
+# Add outlyers
 se["200%"]=Inf
 
-## break into groups and drop NAs
+# break into groups and drop NAs
 d=cpsaat11%>%
 	drop_na(Percentage)%>%
 	group_by(gr=cut(Total, breaks=exp(se)), Race)
 
-## Sumarise the data and remove women as it is not a race
-## This is so it alld up to 100% or so
+# Summarize the data and remove women as it is not a race
+# This is so it add up to 100% or so
 d=d%>%
 	summarise(Percentage=mean(Percentage), Total=mean(Total))%>%
 	filter(Race!="Women")
 d
+```
 
-## Is ther missing data
+### Is there missing data
+```{r}
 cpsaat11%>%
 	drop_na(Percentage)%>%
 	filter(Total<30)
 ```
+No, we just have a lack of opservations for poor paying jobs.
 
+
+### Graph
 ```{r}
 g=d%>%
 	ggplot(aes(fill=Race, y=Percentage, x=gr))+

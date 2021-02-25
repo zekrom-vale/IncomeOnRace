@@ -1,17 +1,77 @@
 ---
-title: "Index"
+title: ""
 author: "Shawn Graven"
 date: "2/23/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # {.tabset}
 
+## Setup
+### Install and Attach
+`installr` provides `require2`, this will install a package if it is missing and library it.  Unfortunately, `intall` is a package too, so you cannot use `require2` on it.
+```{r, message = FALSE, warning = FALSE}
+if(!require(installr))install.packages("installr")
+library(installr)
+
+## https://rstudio.github.io/distill/tables.html
+
+require2(rmarkdown)
+require2(kableExtra)
+require2(tidyverse)
+require2(glue)
+require2(readr)
+require2(plotly)
+require2(readr)
+require2(readxl)
+require2(lubridate)
+require2(curl)
+require2(epidata)
+```
+
+### Set up the Knitted table
+This will automatically detect if the document is being knited and apply the provided table formatting function or `rmarkdown::paged_table` if not provided.  If `nhead` or `ntail` it will call the `head` or `tail` function respectively and limit the data.  On `0`, it will ignore it.  The default is to create a paginated table on overflow so all the data is accessible but does not take the entire screen.
+```{r}
+disp=function(tbl, nhead=0, ntail=0, style=paged_table){
+	if(!is.function(style))style=function(t){
+		kbl(t)%>%
+			style()%>%
+			return()
+	}
+	## If the code is kniting
+	if(isTRUE(getOption('knitr.in.progress'))){
+		if(nhead!=0)tbl=head(tbl, n=nhead)
+		if(ntail!=0)tbl=tail(tbl, n=ntail)
+		return(
+			tbl%>%
+  		style()
+		)
+	}
+	## Otherwise just return the raw tible to be formated by RStudio
+	return(tbl)
+}
+```
+
+```{r eval=FALSE, class.source="bg-info"}
+mtcars%>%disp()
+mtcars%>%disp(nhead = 20)
+mtcars%>%disp(ntail = 10)
+mtcars%>%disp(style = function(t){
+	kbl(t)%>%
+			style()%>%
+			return()
+})
+```
+
+
 ```{r, child='importAndClean.Rmd'}
+```
+
+```{r, child='WageoverTime.Rmd'}
 ```
 
 ```{r, child='WageAccordingtoJob.Rmd'}
