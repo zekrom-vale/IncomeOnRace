@@ -20,17 +20,34 @@ library(installr)
 
 ## https://rstudio.github.io/distill/tables.html
 
+# Provides support for HTML tables in Rmarkown
 require2(rmarkdown)
 require2(kableExtra)
+
+# Contains ggplot2, dpyr, and much more
 require2(tidyverse)
+
+# Replaces `paste`
 require2(glue)
-require2(readr)
+
+# Allows animations and intractable HTML plots
 require2(plotly)
+
+# Import data from files
 require2(readr)
 require2(readxl)
-require2(lubridate)
+
+# Mange dates
+# require2(lubridate)
+
+# Download files
 require2(curl)
+
+# Download and import EPI
 require2(epidata)
+
+# Adjust currency values for inflation
+require2(priceR)
 ```
 
 ### Set up the Knitted table
@@ -51,15 +68,19 @@ disp=function(tbl, nhead=0, ntail=0, style=paged_table){
   		style()
 		)
 	}
-	## Otherwise just return the raw tible to be formated by RStudio
+	## Otherwise just return the raw tibble to be formatted by RStudio
 	return(tbl)
 }
 ```
 
 ```{r eval=FALSE, class.source="bg-info"}
+disp(mtcars)
 mtcars%>%disp()
+# Only output the first 20
 mtcars%>%disp(nhead = 20)
+# Only output the last 10
 mtcars%>%disp(ntail = 10)
+# Override to use the standard kbl function
 mtcars%>%disp(style = function(t){
 	kbl(t)%>%
 			style()%>%
@@ -69,6 +90,9 @@ mtcars%>%disp(style = function(t){
 
 
 ```{r, child='importAndClean.Rmd'}
+```
+
+```{r, child='Export.csv'}
 ```
 
 ```{r, child='WageoverTime.Rmd'}
