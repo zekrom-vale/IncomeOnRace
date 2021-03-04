@@ -1,5 +1,4 @@
 ---
-output:	html_document
 title: "Awesome Paper"
 author:
 - name: Shawn Graven
@@ -23,12 +22,14 @@ author:
   affiliation: University of Wisconsin-River Falls
   footnote: 2
 date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
 footnote:
 - code: 2
   text: Equal contribution, author order is alphabetical
 abstract: |
   This is the abstract.
-  
   It consists of two paragraphs.
 journal: Econometrics (ECON 426)
 address:

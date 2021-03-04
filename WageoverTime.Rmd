@@ -6,14 +6,14 @@ g=Wages%>%
 	geom_line(aes(y=Average))+
 	geom_line(aes(y=Min2019, col=NULL), data=Minimum_wage, size=2)+
 	facet_wrap(~Gender)
-ggplotly(g)
+ggdisp(g)
 
 g=Wages%>%
 	ggplot(aes(col=Race, x=Date))+
 	geom_line(aes(y=Median))+
 	geom_line(aes(y=Min2019, col=NULL), data=Minimum_wage, size=2)+
 	facet_wrap(~Gender)
-ggplotly(g)
+ggdisp(g)
 ```
 
 ### Scatter Plot over Time
@@ -22,5 +22,5 @@ g=Wages%>%
 	ggplot()+
 	geom_point(aes(x=Median, y=Average, col=Race, shape=Gender, frame=Date))+
 	ggtitle("Median vs Average Wage per Race and Gender over Time")
-ggplotly(g)
+ggdisp(g)
 ```

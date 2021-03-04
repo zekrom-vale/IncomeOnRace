@@ -42,7 +42,7 @@ g=d%>%
 	xlab("Wage Bracket")+
 	ylab("Percentage of Earnings")+
 	ggtitle("Percentage of Earnings per Wage Braket and Race")
-ggplotly(g)
+ggdisp(g)
 
 g=d%>%
 	ggplot(aes(fill=Race, y=Percentage*Total, x=gr))+
@@ -51,7 +51,7 @@ g=d%>%
 	xlab("Wage Bracket")+
 	ylab("Earnings in USD")+
 	ggtitle("Total Earnings per Wage Braket and Race")
-ggplotly(g)
+ggdisp(g)
 
 g=d%>%
 	ggplot(aes(fill=gr, x=1, y=Percentage))+
@@ -60,7 +60,7 @@ g=d%>%
 	xlab("Wage Bracket")+
 	ylab("Percentage of Earnings")+
 	ggtitle("Percentage of Earnings per Wage Braket and Race")
-ggplotly(g)
+ggdisp(g)
 
 
 g=d%>%
@@ -71,7 +71,7 @@ g=d%>%
 	xlab("Wage Bracket")+
 	ylab("Earnings in USD")+
 	ggtitle("Log of Total Earnings per Wage Braket and Race")
-ggplotly(g)
+ggdisp(g)
 
 
 g=d%>%
@@ -81,5 +81,5 @@ g=d%>%
 	xlab("Wage Bracket")+
 	ylab("Earnings in USD")+
 	ggtitle("Total Earnings per Wage Braket and Race")
-ggplotly(g)
+ggdisp(g)
 ```

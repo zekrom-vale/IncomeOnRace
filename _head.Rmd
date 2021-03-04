@@ -19,9 +19,8 @@ library(installr)
 require2(rmarkdown)
 require2(kableExtra)
 
-# Contains ggplot2, dpyr, and much more
-require2(tidyverse)
-
+# Allows animations and intractable HTML plots
+require2(plotly)
 
 require2(Rmisc)
 require2(devtools)
@@ -48,11 +47,11 @@ require2(pdfetch)
 require2(rticles)
 
 
+# Contains ggplot2, dpyr, and much more
+require2(tidyverse)
+
 # Replaces `paste`
 require2(glue)
-
-# Allows animations and intractable HTML plots
-require2(plotly)
 
 # Import data from files
 require2(readr)
@@ -75,7 +74,7 @@ require2(priceR)
 This will automatically detect if the document is being knited and apply the provided table formatting function or `rmarkdown::paged_table` if not provided.  If `nhead` or `ntail` it will call the `head` or `tail` function respectively and limit the data.  On `0`, it will ignore it.  The default is to create a paginated table on overflow so all the data is accessible but does not take the entire screen.
 ```{r}
 kblstyle=function(data){
-	style(kbl(data))
+	kableExtra::kable_styling(kableExtra::kbl(data))
 }
 
 innerDisp=function(tbl, style){
