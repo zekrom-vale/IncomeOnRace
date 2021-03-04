@@ -1,16 +1,3 @@
----
-title: "Wage by Race"
-author: "Shawn Graven"
-date: "2/12/2021"
-output: html_document
----
-
-```{r, message=FALSE, warning=FALSE, echo=FALSE}
-knitr::opts_chunk$set(
-	echo = TRUE
-)
-```
-
 ## Import Data
 ### About the Data
 We have two sources of data, one from [U.S. Bureau of Labor Statistics (BLS)](https://www.bls.gov/cps) and the majority of data from [Economic Policy Institute (EPI)](https://www.epi.org/data/##/?subject=wage-avg&g=*&r=*).
@@ -108,7 +95,8 @@ Participation=Participation%>%
 			filter(!grepl("women|men", Race, ignore.case = T))
 	)
 Participation%>%
-	filter(!is.na(Race))
+	filter(!is.na(Race))%>%
+	disp()
 rm(Labor_force_participation)
 ```
 

@@ -1,132 +1,89 @@
 ---
-title: ''
-author: "Shawn Graven"
-date: "2/23/2021"
-output:
-  pdf_document: default
-  html_document: default
-always_allow_html: true
+output:	html_document
+title: "Awesome Paper"
+author:
+- name: Shawn Graven
+  email: shawn.graven@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
+- name: Author Two
+  email: email@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
+- name: Author Three
+  email: email@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
+- name: Author Four
+  email: email@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
+- name: Author Five
+  email: email@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
+date: "`r Sys.Date()`"
+footnote:
+- code: 2
+  text: Equal contribution, author order is alphabetical
+abstract: |
+  This is the abstract.
+  
+  It consists of two paragraphs.
+journal: Econometrics (ECON 426)
+address:
+- code: University of Wisconsin-River Falls
+  address: University of Wisconsin-River Falls, 410 South Third Street, River Falls,
+    WI, 54022
+bibliography: citations.bib
+numbersections: yes
+csl: elsevier-harvard.csl
+preamble: |
+  \usepackage{natbib}
+editor_options:
+  markdown:
+    wrap: 100
 ---
 
-```{r, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+
+```{r, child="_head.Rmd"}
 ```
 
-# {.tabset}
-
-## Setup
-### Install and Attach
-`installr` provides `require2`, this will install a package if it is missing and library it.  Unfortunately, `intall` is a package too, so you cannot use `require2` on it.
-```{r, message = FALSE, warning = FALSE}
-if(!require(installr))install.packages("installr")
-library(installr)
-
-## https://rstudio.github.io/distill/tables.html
-
-# Provides support for HTML tables in Rmarkown
-require2(rmarkdown)
-require2(kableExtra)
-
-# Contains ggplot2, dpyr, and much more
-require2(tidyverse)
-
-# Replaces `paste`
-require2(glue)
-
-# Allows animations and intractable HTML plots
-require2(plotly)
-
-# Import data from files
-require2(readr)
-require2(readxl)
-
-# Mange dates
-# require2(lubridate)
-
-# Download files
-require2(curl)
-
-# Download and import EPI
-require2(epidata)
-
-# Adjust currency values for inflation
-require2(priceR)
-```
-
-### Set up the Knitted table
-This will automatically detect if the document is being knited and apply the provided table formatting function or `rmarkdown::paged_table` if not provided.  If `nhead` or `ntail` it will call the `head` or `tail` function respectively and limit the data.  On `0`, it will ignore it.  The default is to create a paginated table on overflow so all the data is accessible but does not take the entire screen.
-```{r}
-kblstyle=function(data){
-	style(kbl(data))
-}
-
-innerDisp=function(tbl, style){
-	## If the code is kniting
-	if(isTRUE(getOption('knitr.in.progress'))){
-		return(style(tbl))
-	}
-	## Otherwise just return the raw tibble to be formatted by RStudio
-	return(tbl)
-}
-
-disp=function(tbl, nhead=0, ntail=0, style=FALSE, styleHTML=paged_table, stylePDF=kblstyle){
-	if(nhead!=0)tbl=head(tbl, n=nhead)
-	if(ntail!=0)tbl=tail(tbl, n=ntail)
-	if(is.function(style))
-		return(innerDisp(tbl, style))
-	else
-		return(innerDisp(
-			tbl,
-			if_else(
-				knitr::is_html_output(),
-				styleHTML,
-				stylePDF
-				)
-			))
-}
-```
-
-```{r eval=FALSE, class.source="bg-info"}
-disp(mtcars)
-mtcars%>%disp()
-# Only output the first 20
-mtcars%>%disp(nhead = 20)
-# Only output the last 10
-mtcars%>%disp(ntail = 10)
-# Override to use the standard kbl function
-mtcars%>%disp(style = function(t){
-	kbl(t)%>%
-			style()
-})
-```
-
-```{r}
-ggdisp=function(gg){
-	if(
-		isTRUE(getOption('knitr.in.progress'))
-		&&
-		!knitr::is_html_output()
-	)	return(gg)
-	ggplotly(gg)
-}
-```
-
-```{r eval=FALSE, class.source="bg-info"}
-g=mtcars%>%
-	ggplot(aes(mpg, disp))+
-	geom_point()
-ggdisp(g)
-```
+# Introduction
 
 
+# Literature Review
+
+@Keating2019
+
+Here are two sample references: [@pais_socioeconomic_2011; @bob].
+
+# Theoretical Analysis
+
+$$y=\beta_0+\beta_1 x$$
+
+# Empirical Analysis
+
+## Data
 ```{r, child='importAndClean.Rmd'}
 ```
 
 ```{r, child='Export.Rmd'}
 ```
 
+## Methodology
+
+## Results
+
 ```{r, child='WageoverTime.Rmd'}
 ```
 
 ```{r, child='WageAccordingtoJob.Rmd'}
 ```
+
+
+# Conclusion
+
+
+# References
+<!-- All of you references should be stored in BibTeX format in the file ../bib_file.bib -->

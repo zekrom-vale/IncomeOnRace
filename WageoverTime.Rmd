@@ -1,15 +1,3 @@
----
-title: "Wage over Time by Race and Gender"
-author: "Shawn Graven"
-date: "2/25/2021"
-output: html_document
----
-
-```{r, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
 ## Wage over Time by Race and Gender
 ### Average and Medium Wage over Time by Race and Gender
 ```{r}

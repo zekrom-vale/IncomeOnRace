@@ -1,13 +1,3 @@
----
-title: "Graph"
-author: "Shawn Graven"
-date: "2/18/2021"
-output: html_document
----
-
-```{r, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 ## Wages according to Jobs
 ### Sumarise data according to income of jobs
 This data is currently unusable as there is only one opservation per type of job, we don't have over time statistics.  We do however, have a snapshot of the diverse earnings, we don't care what the job is, but the average wage of each race per earning bracket.
