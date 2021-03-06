@@ -1,24 +1,28 @@
 ---
 title: "Awesome Paper"
 author:
+- name: Zachary Bisson
+  email: zachary.bisson@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
+- name: Anna Elfstrum
+  email: anna.elfstrum@my.uwrf.edu
+  affiliation: University of Wisconsin-River Falls
+  footnote: 2
 - name: Shawn Graven
   email: shawn.graven@my.uwrf.edu
   affiliation: University of Wisconsin-River Falls
   footnote: 2
-- name: Author Two
-  email: email@my.uwrf.edu
+- name: Jack Kuivanen
+  email: jack.kuivanen@my.uwrf.edu
   affiliation: University of Wisconsin-River Falls
   footnote: 2
-- name: Author Three
-  email: email@my.uwrf.edu
+- name: Caleb Olson
+  email: caleb.olson@my.uwrf.edu
   affiliation: University of Wisconsin-River Falls
   footnote: 2
-- name: Author Four
-  email: email@my.uwrf.edu
-  affiliation: University of Wisconsin-River Falls
-  footnote: 2
-- name: Author Five
-  email: email@my.uwrf.edu
+- name: Kate Soukkala
+  email: katelyn.soukkala@my.uwrf.edu
   affiliation: University of Wisconsin-River Falls
   footnote: 2
 date: "`r Sys.Date()`"
