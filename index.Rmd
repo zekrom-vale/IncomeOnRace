@@ -55,6 +55,9 @@ editor_options:
 ```
 
 # Introduction
+```{r, child="Introduction.Rmd"}
+
+```
 
 
 # Literature Review

@@ -1,0 +1,8 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+<!-- Introduction -->
+
+Legislation has been passed and social norms challenged to help level the playing field for different races and genders.  Yet, according to Williams (1987), “risk-averse employers believe and act as if black workers are on average less productive than their white counterparts; employers thus hire blacks at a wage discount or not at all.”  Williams (1987) goes on to say that there is a second case that “presumes blacks and white are equally productive on average, but black display a greater variance in ability; hence risk-avers employers’ hiring decision could precipitate a racial wage gap.”   Due to this, it holds that business owners are more likely to make productivity and skill-based decisions based on race rather than incur the cost of acquiring and interpreting statistically significant data.  This is witnessed by looking at historical wage data amongst seemingly disparate groups to see how over time, wages have increased but not at the same rate.  The wage gap remains.
