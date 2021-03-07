@@ -34,6 +34,7 @@ footnote:
   text: Equal contribution, author order is alphabetical
 abstract: |
   This is the abstract.
+  
   It consists of two paragraphs.
 journal: Econometrics (ECON 426)
 address:
@@ -42,7 +43,7 @@ address:
     WI, 54022
 bibliography: citations.bib
 numbersections: yes
-csl: elsevier-harvard.csl
+csl: core/elsevier-harvard.csl
 preamble: |
   \usepackage{natbib}
 editor_options:
