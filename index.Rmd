@@ -34,6 +34,7 @@ footnote:
   text: Equal contribution, author order is alphabetical
 abstract: |
   This is the abstract.
+  
   It consists of two paragraphs.
 journal: Econometrics (ECON 426)
 address:
@@ -42,7 +43,7 @@ address:
     WI, 54022
 bibliography: citations.bib
 numbersections: yes
-csl: elsevier-harvard.csl
+csl: core/elsevier-harvard.csl
 preamble: |
   \usepackage{natbib}
 editor_options:
@@ -51,7 +52,7 @@ editor_options:
 ---
 
 
-```{r, child="_head.Rmd"}
+```{r, child="markown/_head.Rmd"}
 ```
 
 # Introduction
@@ -73,20 +74,20 @@ $$y=\beta_0+\beta_1 x$$
 # Empirical Analysis
 
 ## Data
-```{r, child='importAndClean.Rmd'}
+```{r, child='markown/importAndClean.Rmd'}
 ```
 
-```{r, child='Export.Rmd'}
+```{r, child='markown/Export.Rmd'}
 ```
 
 ## Methodology
 
 ## Results
 
-```{r, child='WageoverTime.Rmd'}
+```{r, child='markown/WageoverTime.Rmd'}
 ```
 
-```{r, child='WageAccordingtoJob.Rmd'}
+```{r, child='markown/WageAccordingtoJob.Rmd'}
 ```
 
 
