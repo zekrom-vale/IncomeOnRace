@@ -52,15 +52,15 @@ editor_options:
 ---
 
 ```{r, eval=FALSE, echo=FALSE, include=FALSE}
-file.edit("markown/_head.Rmd")
+file.edit("markdown/_head.Rmd")
 ```
 
 
-```{r, child="markown/_head.Rmd"}
+```{r, child="markdown/_head.Rmd"}
 ```
 
 # Introduction
-```{r, child="markown/Introduction.Rmd"}
+```{r, child="markdown/Introduction.Rmd"}
 ```
 
 
@@ -77,23 +77,23 @@ $$y=\beta_0+\beta_1 x$$
 # Empirical Analysis
 
 ## Data
-```{r, child='markown/importAndClean.Rmd'}
+```{r, child='markdown/importAndClean.Rmd'}
 ```
 
-```{r, child='markown/Export.Rmd'}
+```{r, child='markdown/Export.Rmd'}
 ```
 
 ## Methodology
 
 ## Results
 
-```{r, child='markown/Estimators.Rmd'}
+```{r, child='markdown/Estimators.Rmd'}
 ```
 
-```{r, child='markown/WageoverTime.Rmd'}
+```{r, child='markdown/WageoverTime.Rmd'}
 ```
 
-```{r, child='markown/WageAccordingtoJob.Rmd'}
+```{r, child='markdown/WageAccordingtoJob.Rmd'}
 ```
 
 
