@@ -60,6 +60,9 @@ file.edit("markown/_head.Rmd")
 ```
 
 # Introduction
+```{r, child="markdown/Introduction.Rmd"}
+
+```
 
 
 # Literature Review
