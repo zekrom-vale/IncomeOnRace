@@ -60,8 +60,7 @@ file.edit("markown/_head.Rmd")
 ```
 
 # Introduction
-```{r, child="markdown/Introduction.Rmd"}
-
+```{r, child="markown/Introduction.Rmd"}
 ```
 
 
