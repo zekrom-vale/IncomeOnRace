@@ -1,0 +1,62 @@
+---
+title: "wage"
+author: "Shawn Graven"
+date: "2/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(glue)
+library(readr)
+library(plotly)
+wage <- read_csv("Median_earnings_by_sex,_race_and_Hispanic_ethnicit_data.csv")
+wage%<>%
+	pivot_longer(
+		-c(
+			Year,
+			`In / Out of New Methodology Implemented`
+		), 
+		names_to = "Race",
+		values_to = "Wage"
+	)%>%
+	drop_na(Wage)
+
+wage=wage%>%
+	separate(Race, c("Race", "Gender"))
+
+wage
+```
+
+```{r}
+wage%>%
+	mutate(Race=glue("{Race} {Gender}"))%>%
+	ggplot(aes(x=Year, y=Wage, col=Race))+
+	geom_line()
+
+sum_wage=wage%>%
+	group_by(Year, Race)%>%
+	summarise(
+		Wage=sum(Wage),
+		count=n()
+	)
+
+# Found duplicate data
+sum_wage%>%
+	filter(count>2)
+wage%>%
+	filter(Year==2013)
+
+
+sum_wage=sum_wage%>%
+	mutate(Wage=if_else(Year==2013, Wage/2, Wage))
+
+g=sum_wage%>%
+	ggplot(aes(x=Year, y=Wage, col=Race))+
+	geom_line()
+ggplotly(g)
+```

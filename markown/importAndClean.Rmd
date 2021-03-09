@@ -1,0 +1,165 @@
+## Import Data
+### About the Data
+We have two sources of data, one from [U.S. Bureau of Labor Statistics (BLS)](https://www.bls.gov/cps) and the majority of data from [Economic Policy Institute (EPI)](https://www.epi.org/data/##/?subject=wage-avg&g=*&r=*).
+
+BLS maintains a data set called `cpsaat`, this data summaries the wage earnings per type of job, based on race and gender.  To access the data in R we use a `curl_download` to retrieve the `.xlsx` file off the internet.  To read the file we use the function  `readxl::read_excel`.
+
+EPI hosts a lot of data on wage statistics including, minimum wage, the participation, and earnings of each race, gender, education level, and much more.  Due to the way EPI presents the data, it cannot be downloaded with `curl`.  Instead, I have accessed the data with the package `epidata`, this simple package interfaces with EPI so that you don't have to manually download the data.  EPI does not contain individual observations for wage, instead it provides 2 summarizations of the data grouped by race, age, gender, and education.  This is the median, 50% of people make more and 50% of people make less than this value.  The other one is mean, or they call average, this is the sum of wages added up and divided by the amount.
+$$\bar x=\frac{\sum_{i=0}^{n-1} x_i}{n}$$
+To reduce the effect of the highest earners we will be using the median, like they use in the housing market as a high outlier will only add one rather than a lot more.
+
+
+### Import cpsaat Data
+Make sure we have internet and if not abort if not
+```{r check internet}
+if(!curl::has_internet())quit()
+```
+
+`cpsaat` data is provided online at <a href="https://www.bls.gov/cps/cpsaat11.xlsx">bls.gov</a>.  As it is a direct link we can download it and save it to a temporary file and process the data with `readxl::read_excel()`
+```{r import cpsaat, message=FALSE, warning=FALSE}
+## Create a temp file name/location
+tmp <- tempfile()
+## Download cpsaat data
+curl_download("https://www.bls.gov/cps/cpsaat11.xlsx", destfile = tmp)
+
+## Import cpsaat
+cpsaat11 <- read_excel(
+		tmp,
+		col_names = c(
+			"Occupation",
+			"Total",
+			"Women",
+			"White",
+			"Black/African American",
+			"Asian",
+			"Hispanic/Latino"
+		),
+		na = "–",
+		col_types = c(
+			Occupation="text",
+			Total="numeric",
+			"Women"="numeric",
+			"White"="numeric",
+			"Black/African American"="numeric",
+			"Asian"="numeric",
+			"Hispanic/Latino"="numeric"
+		),
+		skip = 7
+	)%>%
+	drop_na(Occupation)
+## Remove temp file and var
+file.remove(tmp)
+rm(tmp)
+```
+
+### Import EPI Data
+Get the data at <a href="https://www.epi.org/data/##/?subject=wage-avg&g=*&r=*">EPI</a>.  As there is no direct link avalable we cannot use `curl`, instead there is a package that we can use to access the data, `epidata`.  This will download data in the background.
+```{r Import EPI Data, message=FALSE, warning=FALSE}
+Labor_force_participation <- epidata::get_labor_force_participation_rate(by = "gr")
+
+Medianaverage_hourly_wages <- epidata::get_median_and_mean_wages(by = "gr")
+
+Minimum_wage <- epidata::get_minimum_wage()
+```
+
+## Clean Data
+As with most data, it will have to be cleaned.  This includes pivoting the tibble into a longer tibble, as it will work better for `ggplot2`.  This current format is called wide format as it has many columns.  To fix this we can convert it into long format, as there are many rows, with `pivot_longer`.  When we do this sometimes the new column we create contains more than one value, to remedy this issue we can use `seperate` and mutate if necessary to get the values in the right column.  Another inconsistancy we should be aware of is that the currency values are in different years, not a large difference, but something that should be corrected.
+
+### Clean cpsaat11
+
+```{r Clean cpsaat11}
+cpsaat11%>%disp()
+
+cpsaat11=cpsaat11%>%
+	pivot_longer(-c(Occupation, Total), names_to = "Race", values_to = "Percentage")
+```
+
+Looks fine.
+
+### Clean Labor_force_participation
+```{r Clean Labor_force_participation}
+Labor_force_participation%>%disp()
+
+Participation=Labor_force_participation%>%
+	pivot_longer(-date, names_to = "Race", values_to = "Participation", values_drop_na = T)%>%
+	separate(Race, into = c("Race", "Gender"))
+
+Participation=Participation%>%
+	filter(grepl("women|men", Race, ignore.case = T))%>%
+	mutate(
+		Gender=Race,
+		Race=NA_character_
+	)%>%
+	union(
+		Participation%>%
+			filter(!grepl("women|men", Race, ignore.case = T))
+	)
+Participation%>%
+	filter(!is.na(Race))%>%
+	disp()
+rm(Labor_force_participation)
+```
+
+
+
+### Clean Medianaverage_hourly_wages
+```{r Clean Medianaverage_hourly_wages}
+Medianaverage_hourly_wages%>%disp()
+Wages=Medianaverage_hourly_wages%>%
+	pivot_longer(-date, names_to = "Race", values_to = "Wage", values_drop_na = T)%>%
+	separate(Race, into = c("Race", "Gender", "Summary"), fill = "left")
+
+## Race is in the wrong location sometimes
+Wages=Wages%>%
+	filter(!grepl("women|men", Gender, ignore.case = T))%>%
+	mutate(
+		Race=Gender,
+		Gender=NA_character_
+	)%>%
+	union(
+		Wages%>%
+			filter(grepl("women|men", Gender, ignore.case = T))
+	)
+## No need to keep the Average and Median split up
+Wages=Wages%>%
+	pivot_wider(names_from = Summary, values_from = Wage)
+rm(Medianaverage_hourly_wages)
+```
+
+### Clean Minimum_wage
+This data has data in terms of 2018, the other data is in 2019 USD.  As it will be easiest and the latest data, we will be using 2019.  Although small, there will be a difference and we need to adjust for inflation.  The package `priceR` allows us to convert those monetary values into other ones using online inflation data.
+```{r Clean Minimum_wage}
+Minimum_wage%>%disp()
+##adjust for inflation to get to common 2019
+Minimum_wage=Minimum_wage%>%
+	mutate(
+		Min2019=priceR::adjust_for_inflation(
+			federal_minimum_wage_real_x_2018_dollars,
+			2018,
+			"US",
+			2019
+		)
+	)
+
+Minimum_wage=Minimum_wage%>%
+	rename(MinCur=federal_minimum_wage_nominal_dollars)%>%
+	select(Min2019, MinCur, date)
+```
+
+
+### Fix inconsistant case
+As the data was imported with `epidata`, the colum names have been changed from what the csv has.  So we need to fix that to conform to consistency.
+```{r Fix Case}
+Wages=Wages%>%
+	rename(
+		Date=date,
+		Median=median,
+		Average=average
+	)
+
+Participation=Participation%>%
+	rename(Date=date)
+
+Minimum_wage=Minimum_wage%>%
+	rename(Date=date)
+```

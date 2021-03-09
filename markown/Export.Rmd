@@ -1,0 +1,29 @@
+## Export the data as `.csv` files
+To backup our data we will export the cleaned tibbles.
+
+```{r}
+
+if(!dir.exists("../data"))dir.create("../data")
+
+cpsaat11%>%
+	write_csv("../data/cpsaat11.csv")
+
+Minimum_wage%>%
+	write_csv("../data/Minimum_wage.csv")
+
+Participation%>%
+	write_csv("../data/Participation.csv")
+
+Wages%>%
+	write_csv("../data/Wages.csv")
+```
+
+```{r, eval=FALSE, include=FALSE, echo=FALSE}
+cpsaat11=read_csv("../data/cpsaat11.csv")
+
+Minimum_wage=read_csv("../data/Minimum_wage.csv")
+
+Participation=read_csv("../data/Participation.csv")
+
+Wages=read_csv("../data/Wages.csv")
+```
