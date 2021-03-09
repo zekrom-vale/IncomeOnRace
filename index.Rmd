@@ -53,6 +53,7 @@ editor_options:
 
 ```{r, eval=FALSE, echo=FALSE, include=FALSE}
 file.edit("markdown/_head.Rmd")
+file.edit("markdown/Export.Rmd")
 ```
 
 

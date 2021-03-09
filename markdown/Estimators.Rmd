@@ -21,30 +21,3 @@ WagesAll%>%
 	ggplot(aes(x=Median, y=stats::lag(Median, k=-2)))+
 	geom_point()
 ```
-
-$$mod1 : Median=\beta_1Date+\beta_0+e$$
-$$mod2 : \log(Median)=\beta_1Date+\beta_0+e$$
-$$modRace : \log(Median)=\beta_1Date*Race+\beta_0+e$$
-
-```{r}
-mod1=lm(Median~Date, data = Wages)
-mod2=lm(log(Median)~Date, data = Wages)
-
-WagesAll%>%
-	ggplot(aes(x=Date, y=Median))+
-	geom_point()+
-	geom_smooth(se=FALSE, method = lm)
-```
-
-```{r}
-mod1=lm(Median~Date,
-				data=Wages%>%
-					filter(is.na(Race),is.na(Gender))
-)
-mod2=lm(Median~Date,
-				data=Wages%>%
-					filter(Race=="black",is.na(Gender))
-)
-
-
-```

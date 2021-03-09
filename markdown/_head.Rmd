@@ -5,6 +5,18 @@ knitr::opts_chunk$set(echo = TRUE, comment = "", out.width="90%",fig.asp=.56, fi
 ```
 
 
+```{r, echo=FALSE, include=FALSE}
+isKnit=function(){
+	isTRUE(getOption('knitr.in.progress'))
+}
+if(isKnit()){
+	if(knitr::is_html_output())knittype="html"
+	knittype="latex"
+}else{
+	knittype="text"
+}
+```
+
 
 ## Setup
 ### Install and Attach
@@ -79,7 +91,7 @@ kblstyle=function(data){
 
 innerDisp=function(tbl, style){
 	## If the code is kniting
-	if(isTRUE(getOption('knitr.in.progress'))){
+	if(isKnit()){
 		return(style(tbl))
 	}
 	## Otherwise just return the raw tibble to be formatted by RStudio
