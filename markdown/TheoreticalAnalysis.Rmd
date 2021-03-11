@@ -18,7 +18,7 @@ $$H_A : Black Income \not\propto AllIncome$$
 Our alternate hypothesis is that the median income of black individuals aged 16 and older in the United States is significantly lower than the median income of individuals aged 16 and older. 
 
 
-```{r}
+```{r, include=FALSE, eval=FALSE, echo=FALSE}
 g=Wages%>%
 	filter(is.na(Race),is.na(Gender))%>%
 	ggplot(aes(x=Date, y=Median))+

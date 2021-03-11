@@ -1,7 +1,7 @@
 ```{r setup, include=FALSE}
 rm(list=ls())
 library(knitr)
-knitr::opts_chunk$set(echo = TRUE, comment = "", out.width="90%",fig.asp=.56, fig.align = "center", message=FALSE)
+knitr::opts_chunk$set(echo = FALSE, include = FALSE, comment = "", out.width="90%",fig.asp=.56, fig.align = "center", message=FALSE)
 ```
 
 
@@ -18,9 +18,9 @@ if(isKnit()){
 ```
 
 
-## Setup
+<!--## Setup
 ### Install and Attach
-`installr` provides `require2`, this will install a package if it is missing and library it.  Unfortunately, `intall` is a package too, so you cannot use `require2` on it.
+`installr` provides `require2`, this will install a package if it is missing and library it.  Unfortunately, `intall` is a package too, so you cannot use `require2` on it.-->
 ```{r, message = FALSE, warning = FALSE}
 if(!require(installr))install.packages("installr")
 library(installr)
@@ -82,8 +82,8 @@ require2(epidata)
 require2(priceR)
 ```
 
-### Set up the Knitted table
-This will automatically detect if the document is being knited and apply the provided table formatting function or `rmarkdown::paged_table` if not provided.  If `nhead` or `ntail` it will call the `head` or `tail` function respectively and limit the data.  On `0`, it will ignore it.  The default is to create a paginated table on overflow so all the data is accessible but does not take the entire screen.
+<!--### Set up the Knitted table
+This will automatically detect if the document is being knited and apply the provided table formatting function or `rmarkdown::paged_table` if not provided.  If `nhead` or `ntail` it will call the `head` or `tail` function respectively and limit the data.  On `0`, it will ignore it.  The default is to create a paginated table on overflow so all the data is accessible but does not take the entire screen.-->
 ```{r}
 kblstyle=function(data){
 	kableExtra::kable_styling(kableExtra::kbl(data))
@@ -243,6 +243,8 @@ plot.normal <- function(lmod) {
     yaxt = "n"
   )
 }
-
 ```
 
+```{r}
+knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+```

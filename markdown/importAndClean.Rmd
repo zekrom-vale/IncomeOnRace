@@ -1,3 +1,7 @@
+```{r, include=FALSE, echo=FALSE}
+showClean=FALSE
+runClean=FALSE
+```
 ## Import Data
 ### About the Data
 We have two sources of data, one from [U.S. Bureau of Labor Statistics (BLS)](https://www.bls.gov/cps) and the majority of data from [Economic Policy Institute (EPI)](https://www.epi.org/data/##/?subject=wage-avg&g=*&r=*).
@@ -11,12 +15,12 @@ To reduce the effect of the highest earners we will be using the median, like th
 
 ### Import cpsaat Data
 Make sure we have internet and if not abort if not
-```{r check internet}
+```{r check internet, eval=runClean, echo=showClean, include=showClean}
 if(!curl::has_internet())quit()
 ```
 
 `cpsaat` data is provided online at <a href="https://www.bls.gov/cps/cpsaat11.xlsx">bls.gov</a>.  As it is a direct link we can download it and save it to a temporary file and process the data with `readxl::read_excel()`
-```{r import cpsaat, message=FALSE, warning=FALSE}
+```{r import cpsaat, eval=runClean, echo=showClean, include=showClean, message=FALSE, warning=FALSE}
 ## Create a temp file name/location
 tmp <- tempfile()
 ## Download cpsaat data
@@ -54,7 +58,7 @@ rm(tmp)
 
 ### Import EPI Data
 Get the data at <a href="https://www.epi.org/data/##/?subject=wage-avg&g=*&r=*">EPI</a>.  As there is no direct link avalable we cannot use `curl`, instead there is a package that we can use to access the data, `epidata`.  This will download data in the background.
-```{r Import EPI Data, message=FALSE, warning=FALSE}
+```{r Import EPI Data, eval=runClean, echo=showClean, include=showClean, message=FALSE, warning=FALSE}
 Labor_force_participation <- epidata::get_labor_force_participation_rate(by = "gr")
 
 Medianaverage_hourly_wages <- epidata::get_median_and_mean_wages(by = "gr")
@@ -67,7 +71,7 @@ As with most data, it will have to be cleaned.  This includes pivoting the tibbl
 
 ### Clean cpsaat11
 
-```{r Clean cpsaat11}
+```{r Clean cpsaat11, eval=runClean, echo=showClean, include=showClean}
 cpsaat11%>%disp()
 
 cpsaat11=cpsaat11%>%
@@ -77,7 +81,7 @@ cpsaat11=cpsaat11%>%
 Looks fine.
 
 ### Clean Labor_force_participation
-```{r Clean Labor_force_participation}
+```{r Clean Labor_force_participation, eval=runClean, echo=showClean, include=showClean}
 Labor_force_participation%>%disp()
 
 Participation=Labor_force_participation%>%
@@ -103,7 +107,7 @@ rm(Labor_force_participation)
 
 
 ### Clean Medianaverage_hourly_wages
-```{r Clean Medianaverage_hourly_wages}
+```{r Clean Medianaverage_hourly_wages, eval=runClean, echo=showClean, include=showClean}
 Medianaverage_hourly_wages%>%disp()
 Wages=Medianaverage_hourly_wages%>%
 	pivot_longer(-date, names_to = "Race", values_to = "Wage", values_drop_na = T)%>%
@@ -128,7 +132,7 @@ rm(Medianaverage_hourly_wages)
 
 ### Clean Minimum_wage
 This data has data in terms of 2018, the other data is in 2019 USD.  As it will be easiest and the latest data, we will be using 2019.  Although small, there will be a difference and we need to adjust for inflation.  The package `priceR` allows us to convert those monetary values into other ones using online inflation data.
-```{r Clean Minimum_wage}
+```{r Clean Minimum_wage, eval=runClean, echo=showClean, include=showClean}
 Minimum_wage%>%disp()
 ##adjust for inflation to get to common 2019
 Minimum_wage=Minimum_wage%>%
@@ -149,7 +153,7 @@ Minimum_wage=Minimum_wage%>%
 
 ### Fix inconsistant case
 As the data was imported with `epidata`, the colum names have been changed from what the csv has.  So we need to fix that to conform to consistency.
-```{r Fix Case}
+```{r Fix Case, eval=runClean, echo=showClean, include=showClean}
 Wages=Wages%>%
 	rename(
 		Date=date,
@@ -162,4 +166,14 @@ Participation=Participation%>%
 
 Minimum_wage=Minimum_wage%>%
 	rename(Date=date)
+```
+
+```{r, eval=!runClean, echo=TRUE, include=FALSE}
+cpsaat11=read_csv("../data/cpsaat11.csv")
+
+Minimum_wage=read_csv("../data/Minimum_wage.csv")
+
+Participation=read_csv("../data/Participation.csv")
+
+Wages=read_csv("../data/Wages.csv")
 ```
