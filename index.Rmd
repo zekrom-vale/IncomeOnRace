@@ -73,7 +73,8 @@ Here are two sample references: [@pais_socioeconomic_2011; @bob].
 
 # Theoretical Analysis
 
-$$y=\beta_0+\beta_1 x$$
+```{r, child="markdown/TheoreticalAnalysis.Rmd"}
+```
 
 # Empirical Analysis
 

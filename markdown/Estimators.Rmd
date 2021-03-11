@@ -21,3 +21,62 @@ WagesAll%>%
 	ggplot(aes(x=Median, y=stats::lag(Median, k=-2)))+
 	geom_point()
 ```
+
+```{r}
+mod1=lm(Median~Date, data = Wages)
+mod2=lm(log(Median)~Date, data = Wages)
+```
+
+```{r}
+WagesAll%>%
+	ggplot(aes(x=Date, y=Median))+
+	geom_point()
+```
+
+```{r}
+chow=function(racestr){
+	WagesRace=Wages%>%
+		mutate(R=if_else(Race==racestr, 1, 0))%>%
+		filter(!is.na(Race),is.na(Gender))
+	
+	mod2=lm(log(Median)~Date,
+					data=WagesRace
+	)
+	
+	
+	modRace=lm(log(Median)~Date*R,
+					data=WagesRace
+	)
+	
+	stargazer(mod2, modRace,
+		header=FALSE,
+		type=knittype,
+	  title="Model comparison, 'wage' equation",
+	  keep.stat="n",digits=2, single.row=TRUE,
+	  intercept.bottom=FALSE
+	)
+	
+	anova(mod2, modRace)%>%
+		kable()
+}
+chow("white")
+```
+After performing a chow test we can reject our null hypothesis that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of white individuals who are 16 and older in the United States, since our p-value is less than 0.01. We conclude that the median income of white individuals aged 16 and older in the United States is significantly higher than the median income of individuals aged 16 and older.
+
+<!--As the `p-value` is zero there is no chance that the `Median` wage is comparable between white people and non-white people.  So we cannot ignore `Race` as if fails the chow test telling us we have to accept the alternative hypothesis ($H_A$).  This is that white individuals make a significanly different ammount of money compared to non-whites.-->
+
+
+```{r}
+chow("black")
+```
+
+After performing another chow test we can reject our null hypothesis that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of black individuals who are 16 and older in the United States, since our p-value is less than 0.01. We conclude that the median income of black individuals aged 16 and older in the United States is significantly lower than the median income of individuals aged 16 and older.
+
+```{r}
+chow("hispanic")
+```
+
+After performing our final chow test, we can reject our null hypothesis that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income.
+
+
+Some limitations to the experiment are the data collection. This is because we are unable to collect everyone’s income in the united states to test this. However, the data we do have gives a good representation of the income of people as we currently know it in the United States. Another major issue would be the voluntary data used. People who volunteer to give out this data may not participate due to their current financial status. This would skew the data and ultimately change the outcome. 
