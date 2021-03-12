@@ -2,11 +2,22 @@
 
 ```{r}
 WagesAll=Wages%>%
-	filter(is.na(Race),is.na(Gender))
-WageTs=ts(WagesAll, start = min(WagesAll$Date), end = max(WagesAll$Date), frequency = 1)
-
-acf(WageTs[, "Median"])
+	filter(is.na(Race),is.na(Gender))%>%
+	# Convert Year into date
+	mutate(Date=lubridate::as_date(glue("{Date}-1-1")))%>%
+	select(Date, Median)
+# WageTs=ts(WagesAll, start = min(WagesAll$Date), end = max(WagesAll$Date), frequency = 1)
+# acf(WageTs[, "Median"])
+WagesAll%>%
+	plot_acf_diagnostics(
+		.value=Median,
+		.date_var = Date,
+		.interactive = !(isKnit()&&knitr::is_latex_output()),
+		# Use years as the lag interval so it's not confusing.
+		.lags=glue("{max(Wages$Date)-min(Wages$Date)} years")
+)
 ```
+<small>Lags in years</small>
 There is a lot of autocorelation so we update the models to include a lag of the dependent variable.  $\beta Median_{t-1}$
 
 These models now become:

@@ -80,6 +80,10 @@ require2(epidata)
 
 # Adjust currency values for inflation
 require2(priceR)
+
+# Better ACF graphs
+# https://www.r-bloggers.com/2020/06/time-series-in-5-minutes-part-2-autocorrelation-and-cross-correlation/
+require2(timetk)
 ```
 
 <!--### Set up the Knitted table
