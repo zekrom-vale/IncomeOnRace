@@ -1,8 +1,5 @@
 ## Estimators
 
-$$mod0 : Median=Date\beta_1+\beta_0+e$$
-<small>Data is already aggregated</small>
-
 ```{r}
 WagesAll=Wages%>%
 	filter(is.na(Race),is.na(Gender))
@@ -10,10 +7,19 @@ WageTs=ts(WagesAll, start = min(WagesAll$Date), end = max(WagesAll$Date), freque
 
 acf(WageTs[, "Median"])
 ```
-There is a lot of autocorelation
+There is a lot of autocorelation so we update the models to include a lag of the dependent variable.  $\beta Median_{t-1}$
+
+These models now become:
+$$mod0 : Median_t=\beta_2Date+\beta_1Median_{t-1}+\beta_0+e$$
+$$mod1 : Median=\beta_2Date+\beta_1Median_{t-1}+\beta_0+e$$
+$$mod2 : \log(Median)=\beta_2Date+\beta_1Median_{t-1}+\beta_0+e$$
+$$modWhite : \log(Median)=\beta_2Date*White+\beta_1Median_{t-1}+\beta_0+e$$
+$$modBlack : \log(Median)=\beta_2Date*Black+\beta_1Median_{t-1}+\beta_0+e$$
+$$modBlack : \log(Median)=\beta_2Date*Hispanic+\beta_1Median_{t-1}+\beta_0+e$$
+<small>Were $White$, $Black$, and $Hispanic$ are binary features based on $Race$.</small>
 
 ```{r}
-mod0=dynlm(Median~Date, data = Wages)
+mod0=dynlm(Median~Date+stats::lag(Median, -1), data = Wages)
 
 bgtest(mod0, order = 1, type = "F", fill = NA)
 
@@ -23,8 +29,8 @@ WagesAll%>%
 ```
 
 ```{r}
-mod1=lm(Median~Date, data = Wages)
-mod2=lm(log(Median)~Date, data = Wages)
+mod1=lm(Median~Date+stats::lag(Median, -1), data = Wages)
+mod2=lm(log(Median)~Date+stats::lag(Median, -1), data = Wages)
 ```
 
 ```{r}
@@ -63,7 +69,7 @@ chow("white")
 ```
 After performing a chow test we can reject our null hypothesis that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of white individuals who are 16 and older in the United States, since our p-value is less than 0.01. We conclude that the median income of white individuals aged 16 and older in the United States is significantly higher than the median income of individuals aged 16 and older.
 
-<!--As the `p-value` is zero there is no chance that the `Median` wage is comparable between white people and non-white people.  So we cannot ignore `Race` as if fails the chow test telling us we have to accept the alternative hypothesis ($H_A$).  This is that white individuals make a significanly different ammount of money compared to non-whites.-->
+<!--As the `p-value` is zero there is no chance that the `Median` wage is comparable between white people and non-white people.  So we cannot ignore `Race` as if fails the chow test telling us we have to accept the alternative hypothesis ($H_A$).  This is that white individuals make a significantly different amount of money compared to non-whites.-->
 
 
 ```{r, results='asis'}

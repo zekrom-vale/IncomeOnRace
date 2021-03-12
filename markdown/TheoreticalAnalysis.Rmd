@@ -1,9 +1,14 @@
+## Hyppothesises
+### White
+
 $$H_0 : White Income \propto AllIncome$$
 
 Our null hypothesis is that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of white individuals who are 16 and older in the United States.  
 
 
 $$H_A : White Income \not\propto AllIncome$$
+
+### Black
 
 Our alternate hypothesis is that the median income of white individuals aged 16 and older in the United States is significantly lower than the median income of individuals aged 16 and older. 
 
@@ -12,32 +17,24 @@ $$H_0 : Black Income \propto AllIncome$$
 
 Our null hypothesis is that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of black individuals who are 16 and older in the United States.  
 
-
 $$H_A : Black Income \not\propto AllIncome$$
+
+### Hispanic
+
+Our alternate hypothesis is that the median income of hispanic individuals aged 16 and older in the United States is significantly lower than the median income of individuals aged 16 and older. 
+
+
+$$H_0 : Hispanic Income \propto AllIncome$$
+
+Our null hypothesis is that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of hispanic individuals who are 16 and older in the United States.  
+
+
+$$H_A : Hispanic Income \not\propto AllIncome$$
 
 Our alternate hypothesis is that the median income of black individuals aged 16 and older in the United States is significantly lower than the median income of individuals aged 16 and older. 
 
-
-```{r, include=FALSE, eval=FALSE, echo=FALSE}
-g=Wages%>%
-	filter(is.na(Race),is.na(Gender))%>%
-	ggplot(aes(x=Date, y=Median))+
-	geom_line()+
-	geom_smooth(se=FALSE, method = lm)+
-	ylim(c(0, 19))
-ggdisp(g)
-
-g=Wages%>%
-	filter(is.na(Race),is.na(Gender))%>%
-	ggplot(aes(x=Date, y=log(Median)))+
-	geom_line()+
-	geom_smooth(se=FALSE, method = lm)+
-	ylim(c(0,3))
-ggdisp(g)
-```
-
-
-Or model is simple, `mod1` predicting `Median` only depends on the `Date`.  `mod2` preforms the $\log(Median)$ as it makes the data more liniear as show above.  These will represent $AllIncome$.  `modBlack` includes the `Black` factor and will represent the Black population and non-black's.  The same is done with `modWhite` and `modHispanic` with the white's and the hispanics respectively.
+## Models
+Our model is simple, `mod1` predicting `Median` only depends on the `Date`.  `mod2` preforms the $\log(Median)$ as it makes the data more linear as monetary values tends to fit log regressions much better than linear ones.  These will represent $AllIncome$.  `modBlack` includes the `Black` factor and will represent the Black population and non-black's.  The same is done with `modWhite` and `modHispanic` with the white's and the hispanics respectively.
 
 $$mod1 : Median=\beta_1Date+\beta_0+e$$
 $$mod2 : \log(Median)=\beta_1Date+\beta_0+e$$
