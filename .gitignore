@@ -1,3 +1,9 @@
+# Knit
+*_files
+*.spl
+*.tex
+*.log
+
 # History files
 .Rhistory
 .Rapp.history
