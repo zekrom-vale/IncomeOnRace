@@ -10,12 +10,12 @@ acf(WageTs[, "Median"])
 There is a lot of autocorelation so we update the models to include a lag of the dependent variable.  $\beta Median_{t-1}$
 
 These models now become:
-$$mod0 : Median_t=\beta_2Date+\beta_1Median_{t-1}+\beta_0+e$$
-$$mod1 : Median=\beta_2Date+\beta_1Median_{t-1}+\beta_0+e$$
-$$mod2 : \log(Median)=\beta_2Date+\beta_1Median_{t-1}+\beta_0+e$$
-$$modWhite : \log(Median)=\beta_2Date*White+\beta_1Median_{t-1}+\beta_0+e$$
-$$modBlack : \log(Median)=\beta_2Date*Black+\beta_1Median_{t-1}+\beta_0+e$$
-$$modBlack : \log(Median)=\beta_2Date*Hispanic+\beta_1Median_{t-1}+\beta_0+e$$
+$$mod0 : Median_t=\beta_3Date+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$mod1 : Median=\beta_3Date+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$mod2 : \log(Median)=\beta_3Date+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$modWhite : \log(Median)=\beta_3Date*White+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$modBlack : \log(Median)=\beta_3Date*Black+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$modBlack : \log(Median)=\beta_3Date*Hispanic+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
 <small>Were $White$, $Black$, and $Hispanic$ are binary features based on $Race$.</small>
 
 ```{r}
