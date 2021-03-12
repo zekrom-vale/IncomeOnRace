@@ -93,12 +93,6 @@ Here are two sample references: [@pais_socioeconomic_2011; @bob].
 ```{r, child='markdown/Estimators.Rmd'}
 ```
 
-```{r, child='markdown/WageoverTime.Rmd'}
-```
-
-```{r, child='markdown/WageAccordingtoJob.Rmd'}
-```
-
 
 # Conclusion
 
