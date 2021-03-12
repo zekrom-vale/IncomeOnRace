@@ -33,7 +33,7 @@ WagesAll%>%
 	geom_point()
 ```
 
-```{r}
+```{r, results='asis'}
 chow=function(racestr){
 	WagesRace=Wages%>%
 		mutate(R=if_else(Race==racestr, 1, 0))%>%
@@ -66,13 +66,13 @@ After performing a chow test we can reject our null hypothesis that there is no 
 <!--As the `p-value` is zero there is no chance that the `Median` wage is comparable between white people and non-white people.  So we cannot ignore `Race` as if fails the chow test telling us we have to accept the alternative hypothesis ($H_A$).  This is that white individuals make a significanly different ammount of money compared to non-whites.-->
 
 
-```{r}
+```{r, results='asis'}
 chow("black")
 ```
 
 After performing another chow test we can reject our null hypothesis that there is no significant difference between the median income of individuals aged 16 and older in the United States and the median income of black individuals who are 16 and older in the United States, since our p-value is less than 0.01. We conclude that the median income of black individuals aged 16 and older in the United States is significantly lower than the median income of individuals aged 16 and older.
 
-```{r}
+```{r, results='asis'}
 chow("hispanic")
 ```
 
