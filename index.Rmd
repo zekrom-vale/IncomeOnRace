@@ -68,9 +68,9 @@ file.edit("markdown/importAndClean.Rmd")
 
 # Literature Review
 
-@Keating2019
+```{r, child="markdown/LitReview.Rmd"}
 
-Here are two sample references: [@pais_socioeconomic_2011; @bob].
+```
 
 # Theoretical Analysis
 
