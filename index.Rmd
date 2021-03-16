@@ -98,7 +98,8 @@ file.edit("markdown/importAndClean.Rmd")
 
 
 # Conclusion
-
+```{r, child='markdown/Conclusion.Rmd'}
+```
 
 # References
 <!-- All of you references should be stored in BibTeX format in the file ../bib_file.bib -->
