@@ -2,8 +2,8 @@
 showClean=FALSE
 runClean=FALSE
 ```
-## Export the data as `.csv` files
-To backup our data we will export the cleaned tibbles.
+<!--## Export the data as `.csv` files
+To backup our data we will export the cleaned tibbles.-->
 
 ```{r, eval=runClean}
 
