@@ -22,7 +22,8 @@ if(isKnit()){
 ### Install and Attach
 `installr` provides `require2`, this will install a package if it is missing and library it.  Unfortunately, `intall` is a package too, so you cannot use `require2` on it.-->
 ```{r, message = FALSE, warning = FALSE}
-if(!require(installr))install.packages("installr")
+if(!require(installr))
+	install.packages("installr")
 library(installr)
 
 ## https://rstudio.github.io/distill/tables.html

@@ -27,13 +27,14 @@ author:
   footnote: 2
 date: "`r Sys.Date()`"
 output:
-  html_document: default
   pdf_document: rticles::elsevier_article
+  html_document: default
 footnote:
 - code: 2
   text: Equal contribution, author order is alphabetical
 abstract: |
   “More than half of whites — 55 percent — surveyed say that, generally speaking, they believe there is discrimination against white people in America today” [@gonyea2017majority].  What is true and what is real are becoming harder and harder to decern.  When it comes to the claims (or negations) of a wage gap existing between dominant and non-dominant races it is no different.  Here, using statistical analysis tools on data from the Economic Policy Institute, we have found that a statistically significant gap does exist.  
+  
   In the following sections you will find a basic introduction (PDF pg. 1), literature review (PDF pg. 1), theoretical analysis (PDF pg. 2), empirical analysis (PDF pg. 3), conclusion (PDF pg. 10), and finally a list of references cited within this work (PDF pg. 11).  The literature review contains a broad overview of what we found in our initial research and our theoretical analysis sets up the questions and hypothesis tests that we perform in the empirical analysis.  Lastly, we have our conclusion which sums up our findings clearly and concisely.  
 journal: Econometrics (ECON 426)
 address:
