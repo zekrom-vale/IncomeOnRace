@@ -27,8 +27,8 @@ author:
   footnote: 2
 date: "`r Sys.Date()`"
 output:
-  pdf_document: rticles::elsevier_article
   html_document: default
+  pdf_document: rticles::elsevier_article
 footnote:
 - code: 2
   text: Equal contribution, author order is alphabetical

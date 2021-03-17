@@ -7,7 +7,7 @@ We have two sources of data, one from [U.S. Bureau of Labor Statistics (BLS)](ht
 
 BLS maintains a data set called `cpsaat`, this data summaries the wage earnings per type of job, based on race and gender.  To access the data in R we use a `curl_download` to retrieve the `.xlsx` file off the internet.  To read the file we use the function  `readxl::read_excel`.
 
-EPI hosts a lot of data on wage statistics including, minimum wage, the participation, and earnings of each race, gender, education level, and much more.  Due to the way EPI presents the data, it cannot be downloaded with `curl`.  Instead, I have accessed the data with the package `epidata`, this simple package interfaces with EPI so that you don't have to manually download the data.  EPI does not contain individual observations for wage, instead it provides 2 summarizations of the data grouped by race, age, gender, and education.  This is the median, 50% of people make more and 50% of people make less than this value.  The other one is mean, or they call average, this is the sum of wages added up and divided by the amount.
+EPI hosts a lot of data on wage statistics including, minimum wage, the participation, and earnings of each $race$, $gender$, $education$ level, and much more.  Due to the way EPI presents the data, it cannot be downloaded with `curl`.  Instead, I have accessed the data with the package `epidata`, this simple package interfaces with EPI so that you don't have to manually download the data.  EPI does not contain individual observations for wage, instead it provides 2 summarizations of the data grouped by $race$, $age$, $gender$, and $education$.  This is the $Median$, 50% of people make more and 50% of people make less than this value.  The other one is mean called $Average$, this is the sum of wages added up and divided by the amount.
 $$\bar x=\frac{\sum_{i=0}^{n-1} x_i}{n}$$
 
 To reduce the effect of the highest earners we will be using the median, like they use in the housing market as a high outlier will only add one rather than a lot more.
@@ -64,7 +64,7 @@ Minimum_wage <- epidata::get_minimum_wage()
 ```
 
 ## Clean Data
-As with most data, it will have to be cleaned.  This includes pivoting the tibble into a longer tibble, as it will work better for `ggplot2`.  This current format is called wide format as it has many columns.  To fix this we can convert it into long format, as there are many rows, with `pivot_longer`.  When we do this sometimes the new column we create contains more than one value, to remedy this issue we can use `seperate` and mutate if necessary to get the values in the right column.  Another inconsistancy we should be aware of is that the currency values are in different years, not a large difference, but something that should be corrected.
+As with most data, it will have to be cleaned.  This includes pivoting the tibble into a longer tibble, as it will work better for `ggplot2`.  This current format is called wide format as it has many columns.  To fix this we can convert it into long format, as there are many rows, with `pivot_longer`.  When we do this sometimes the new column we create contains more than one value, to remedy this issue we can use `seperate` and mutate if necessary to get the values in the right column.  Another inconsistency we should be aware of is that the currency values are in different years, not a large difference, but something that should be corrected.
 
 <!--### Clean cpsaat11-->
 
@@ -165,6 +165,7 @@ Minimum_wage=Minimum_wage%>%
 	rename(Date=date)
 ```
 
+<!--Import if not cleaning the data-->
 ```{r, eval=!runClean, echo=TRUE, include=FALSE}
 cpsaat11=read_csv("../data/cpsaat11.csv")
 

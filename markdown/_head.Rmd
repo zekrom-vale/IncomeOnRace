@@ -251,5 +251,5 @@ plot.normal <- function(lmod) {
 ```
 
 ```{r}
-knitr::opts_chunk$set(echo = TRUE, include = TRUE)
+knitr::opts_chunk$set(echo = FALSE, include = TRUE)
 ```

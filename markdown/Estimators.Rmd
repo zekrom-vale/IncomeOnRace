@@ -51,8 +51,18 @@ bgtest(mod0, order = 1, type = "F", fill = NA)
 ```
 
 ```{r}
-mod1=lm(Median~Date+stats::lag(Median, -1)+stats::lag(Median, -2), data = Wages)
-mod2=lm(log(Median)~Date+stats::lag(Median, -1)+stats::lag(Median, -2), data = Wages)
+mod1=lm(
+	Median~Date
+	+stats::lag(Median, -1)
+	+stats::lag(Median, -2),
+	data = Wages
+)
+mod2=lm(
+	log(Median)~Date
+	+stats::lag(Median, -1)
+	+stats::lag(Median, -2),
+	data = Wages
+)
 ```
 
 
