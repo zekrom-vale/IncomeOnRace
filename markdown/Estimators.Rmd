@@ -1,5 +1,3 @@
-## Estimators
-
 ### Detect Autocorrelation
 Autocorrelation is a major issue in time series as it breaks the independent observations that OLS (Ordinary Least Squares) expects.  So, autocorrelation must be removed before fitting the model.  This can be resolved by adding lags to the regression.
 ```{r}
@@ -8,8 +6,6 @@ WagesAll=Wages%>%
 	# Convert Year into date
 	mutate(Date=lubridate::as_date(glue("{Date}-1-1")))%>%
 	select(Date, Median)
-# WageTs=ts(WagesAll, start = min(WagesAll$Date), end = max(WagesAll$Date), frequency = 1)
-# acf(WageTs[, "Median"])
 WagesAll%>%
 	plot_acf_diagnostics(
 		.value=Median,
@@ -67,12 +63,16 @@ chow=function(racestr){
 		mutate(R=if_else(Race==racestr, 1, 0))%>%
 		filter(!is.na(Race),is.na(Gender))
 	
-	mod2=lm(log(Median)~Date+stats::lag(Median, -1)+stats::lag(Median, -2),
+	mod2=lm(log(Median)~Date
+					+stats::lag(Median, -1)
+					+stats::lag(Median, -2),
 					data=WagesRace
 	)
 	
 	
-	modRace=lm(log(Median)~Date*R+stats::lag(Median, -1)+stats::lag(Median, -2),
+	modRace=lm(log(Median)~Date*R
+						 +stats::lag(Median, -1)
+						 +stats::lag(Median, -2),
 					data=WagesRace
 	)
 	
