@@ -5,7 +5,7 @@ runClean=FALSE
 <!--## Export the data as `.csv` files
 To backup our data we will export the cleaned tibbles.-->
 
-```{r, eval=runClean}
+```{r, eval=runClean, include=showClean, echo=showClean}
 
 if(!dir.exists("../data"))dir.create("../data")
 
