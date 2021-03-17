@@ -16,7 +16,14 @@ WagesAll%>%
 )
 ```
 <small>Lags in years</small>
-As you can see there is a lot of autocorrelation as indicated by the ACF graph, the larger the value the more correlated the data is to the previous value. To fix it we update the models to include a lag of the dependent variable.  According to the PACF, it appears that there is only one lag that is required to fix the issue.  $+\beta Median_{t-x} \forall x\in\mathbb{Z}$
+
+```{r}
+mod0=dynlm(Median~Date, data = Wages)
+
+bgtest(mod0, order = 1, type = "F", fill = NA)
+```
+
+As you can see there is a lot of autocorrelation as indicated by the ACF graph and agreed by the `bgtest`, the larger the value the more correlated the data is to the previous value. To fix it we update the models to include a lag of the dependent variable.  According to the PACF, it appears that there is only one lag that is required to fix the issue.  $+\beta Median_{t-x} \forall x\in\mathbb{Z}$
 
 These models now become:
 $$mod0 : Median_t=\beta_3Date+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
@@ -45,12 +52,6 @@ ggdisp(g)
 
 
 ```{r}
-mod0=dynlm(Median~Date+stats::lag(Median, -1)+stats::lag(Median, -2), data = Wages)
-
-bgtest(mod0, order = 1, type = "F", fill = NA)
-```
-
-```{r}
 mod1=lm(
 	Median~Date
 	+stats::lag(Median, -1)
@@ -65,6 +66,76 @@ mod2=lm(
 )
 ```
 
+### Model Accuracy
+
+```{r}
+WageSplit=initial_time_split(Wages, lag = 2)
+
+mod1t=lm(
+	Median~Date
+	+stats::lag(Median, -1)
+	+stats::lag(Median, -2),
+	data = training(WageSplit)
+)
+mod2t=lm(
+	log(Median)~Date
+	+stats::lag(Median, -1)
+	+stats::lag(Median, -2),
+	data = training(WageSplit)
+)
+```
+
+```{r, warning=FALSE}
+t=testing(WageSplit)
+m1=mod1t%>%
+	predict(t)%>%
+	tibble(.pred=.)%>%
+	bind_cols(t)%>%
+	rmse(truth=Median, estimate=.pred)%>%
+	mutate(mod="mod1")
+m2=mod2t%>%
+	predict(t)%>%
+	tibble(.pred=.)%>%
+	bind_cols(t)%>%
+	rmse(truth=Median, estimate=.pred)%>%
+	mutate(mod="mod2")
+m1%>%
+	union(m2)%>%
+	dplyr::select(mod, .metric, .estimator, .estimate)%>%
+	disp()
+```
+According to the testing data, `mod1` is the best model at predicting as it has a lower `RMSE`.
+
+```{r}
+plot.fitted(mod1, "Residuals vs. Fits mod1 (Dependent Variable: {name})", fun=ylim(c(-1e-14, 1e-14)))%>%
+	ggdisp()
+```
+
+```{r}
+plot.fitted(mod2, "Residuals vs. Fits mod2 (Dependent Variable: ")%>%
+	ggdisp()
+```
+Even the Residuals vs Fitted graph agrees with `RMSE` as most of the data is gathered around 0 in the gray aria and spread out.  Where `mod2` shows a curve going outside that aria.  So the models will be based on `mod1`.
+
+$$modWhite : Median=\beta_3Date*White+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$modBlack : Median=\beta_3Date*Black+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+$$modBlack : Median=\beta_3Date*Hispanic+\beta_2Median_{t-2}+\beta_1Median_{t-1}+\beta_0+e$$
+
+So, the updated model looks like this:
+```{r}
+g=Wages%>%
+	filter(is.na(Gender))%>%
+	ggplot(aes(x=Date, y=Median, col=Race))+
+	geom_line()+
+	geom_smooth(
+		method = lm,
+		se=F
+	)+
+	ggtitle("Models for Median Income vs Time per Race")+
+	xlab("Year")+
+	ylab("Median Income")
+ggdisp(g)
+```
 
 ### Chow Test
 ```{r, results='asis'}
@@ -73,14 +144,14 @@ chow=function(racestr){
 		mutate(R=if_else(Race==racestr, 1, 0))%>%
 		filter(!is.na(Race),is.na(Gender))
 	
-	mod2=lm(log(Median)~Date
+	mod2=lm(Median~Date
 					+stats::lag(Median, -1)
 					+stats::lag(Median, -2),
 					data=WagesRace
 	)
 	
 	
-	modRace=lm(log(Median)~Date*R
+	modRace=lm(Median~Date*R
 						 +stats::lag(Median, -1)
 						 +stats::lag(Median, -2),
 					data=WagesRace

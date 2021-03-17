@@ -59,6 +59,9 @@ require2(orcutt)
 require2(pdfetch)
 require2(rticles)
 
+# For models
+require2(tidymodels)
+
 
 # Contains ggplot2, dpyr, and much more
 require2(tidyverse)
@@ -213,12 +216,10 @@ plot.time <- function (lmod, ln=F) {
   return(pr)
 }
 
-plot.fitted <- function(lmod) {
+plot.fitted <- function(lmod, title="Residuals vs. Fits (Dependent Variable: {name})", fun=NULL) {
   df = lmod$model
-  title = paste("Residuals vs. Fits (Dependent Variable: ",
-                names(df)[1],
-                ")",
-                sep = "")
+  name=names(df)[1]
+  title = glue(title)
   pr <- df %>% ggplot(aes(x = fitted(lmod), y = resid(lmod))) +
     geom_ribbon(aes(ymin = -sigma(lmod), ymax = sigma(lmod)),
                 fill = "gray",
@@ -234,8 +235,9 @@ plot.fitted <- function(lmod) {
     geom_hline(yintercept = 0,
                linetype = "solid",
                color = "black")
+  if(!is.null(fun))return(pr+fun)
   return(pr)  
-}  
+}
 
 plot.normal <- function(lmod) {
   res <- resid(lmod)
