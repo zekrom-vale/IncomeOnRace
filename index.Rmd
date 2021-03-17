@@ -49,6 +49,7 @@ preamble: |
 editor_options:
   markdown:
     wrap: 100
+urlcolor: blue
 ---
 
 ```{r, eval=FALSE, echo=FALSE, include=FALSE}
